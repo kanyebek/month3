@@ -1,34 +1,48 @@
 import flet as ft
-import datetime
+from datetime import datetime
 
 def main(page: ft.Page):
-    page.title = 'My first app'
+    page.title = "Моё первое приложение"
     page.theme_mode = ft.ThemeMode.LIGHT
-    greeting_text = ft.Text('Hello, world!')
-
-    history = []
-    history_text = ft.Text('История приветствий:',style='bodyMedium')
+    
+    greeting_text = ft.Text("Привет, мир!")
 
 
+    greeting_history = []
 
-    def clear_history(e):
-        history.clear()
-        history_text.value = 'История приветствий:'
-        page.update()
+    history_text = ft.Text("История приветствий:", style='bodyMedium')
+
+    
 
     def on_button_click(e):
         name = name_input.value.strip()
-        timemark = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
         if name:
-            greeting_text.value = f'Hello, {name}!'
-            greet_button.text = 'Greet again'
+            if '06' <= timestamp[11:13] < '12':
+                greeting_text.value = f"Доброе утро, {name}!"
+            elif '12' <= timestamp[11:13] < '18':
+                greeting_text.value = f"Добрый день, {name}!"
+            elif '18' <= timestamp[11:13] < '24':
+                greeting_text.value = f"Добрый вечер, {name}!"
+            else:
+                greeting_text.value = f"Доброй ночи, {name}!"
+            greet_button.text = 'Поздороваться снова'
             name_input.value = ''
-            history.append(f'{timemark}:{name}')
-            history_text.value = 'История приветствий:\n' + '\n'.join(history)
-        else:
-            greeting_text.value = 'Write your name plz'
 
+            greeting_history.append(f"{timestamp}: {name}")
+            history_text.value = "История приветствий:\n" + "\n".join(greeting_history)
+            
+        else:
+            greeting_text.value = "Пожалуйста, введите ваше имя!"
+
+        page.update()
+
+    name_input = ft.TextField(label="Введите ваше имя:", autofocus=True, on_submit=on_button_click)
+
+    def clear_history(e):
+        greeting_history.clear()
+        history_text.value = "История приветствий:"
         page.update()
     
     def toggle_theme(e):
@@ -36,21 +50,31 @@ def main(page: ft.Page):
             page.theme_mode = ft.ThemeMode.DARK
         else:
             page.theme_mode = ft.ThemeMode.LIGHT
+
         page.update()
+
 
     theme_button = ft.IconButton(icon=ft.icons.BRIGHTNESS_6, tooltip="Сменить тему", on_click=toggle_theme)
 
-    name_input = ft.TextField(label='Name:', autofocus=True, on_submit=on_button_click)
-    greet_button = ft.ElevatedButton('Greet', on_click=on_button_click)
-    clear_history_button = ft.TextButton('Clear history', on_click=clear_history)
-    clear_history_icon = ft.IconButton(icon=ft.icons.DELETE, on_click=clear_history)
+
+    clear_button = ft.TextButton("Очистить историю", on_click=clear_history)
+
+    clear_button_icon = ft.IconButton(icon=ft.icons.DELETE, tooltip="Очиститка", on_click=clear_history)
 
 
-    page.add( ft.Row([theme_button,clear_history_button, clear_history_icon], alignment=ft.MainAxisAlignment.CENTER),
-            greeting_text, 
-            name_input,
-            greet_button, 
-            history_text, 
-            )
+    greet_button = ft.ElevatedButton("Поздороваться", on_click=on_button_click)
+
+
+    page.add(ft.Row([theme_button, clear_button,
+             clear_button_icon], alignment=ft.MainAxisAlignment.CENTER), 
+             greeting_text, 
+             name_input, 
+             greet_button,
+             history_text
+    )
+
 ft.app(target=main)
+
 # ft.app(target=main, view=ft.WEB_BROWSER)
+
+
