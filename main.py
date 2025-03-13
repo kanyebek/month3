@@ -1,5 +1,6 @@
 import flet as ft
 from datetime import datetime
+from datetime import time
 
 def main(page: ft.Page):
     page.title = "Моё первое приложение"
@@ -17,13 +18,16 @@ def main(page: ft.Page):
     def on_button_click(e):
         name = name_input.value.strip()
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
+        am6 = datetime.now().replace(hour=6, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
+        pm12 = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
+        pm18 = datetime.now().replace(hour=18, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
+        am0 = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
         if name:
-            if '06' <= timestamp[11:13] < '12':
+            if am6 <= timestamp < pm12:
                 greeting_text.value = f"Доброе утро, {name}!"
-            elif '12' <= timestamp[11:13] < '18':
+            elif pm12 <= timestamp < pm18:
                 greeting_text.value = f"Добрый день, {name}!"
-            elif '18' <= timestamp[11:13] < '24':
+            elif pm18 <= timestamp < am0:
                 greeting_text.value = f"Добрый вечер, {name}!"
             else:
                 greeting_text.value = f"Доброй ночи, {name}!"
