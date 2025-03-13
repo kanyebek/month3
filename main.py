@@ -1,40 +1,34 @@
 import flet as ft
 from datetime import datetime
-from datetime import time
 
 def main(page: ft.Page):
     page.title = "Моё первое приложение"
     page.theme_mode = ft.ThemeMode.LIGHT
     
     greeting_text = ft.Text("Привет, мир!")
-
-
     greeting_history = []
 
     history_text = ft.Text("История приветствий:", style='bodyMedium')
 
-    
-
     def on_button_click(e):
         name = name_input.value.strip()
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        am6 = datetime.now().replace(hour=6, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
-        pm12 = datetime.now().replace(hour=12, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
-        pm18 = datetime.now().replace(hour=18, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
-        am0 = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now()
+        current_hour = timestamp.hour
+        
         if name:
-            if am6 <= timestamp < pm12:
+            if 6 <= current_hour < 12:
                 greeting_text.value = f"Доброе утро, {name}!"
-            elif pm12 <= timestamp < pm18:
+            elif 12 <= current_hour < 18:
                 greeting_text.value = f"Добрый день, {name}!"
-            elif pm18 <= timestamp < am0:
+            elif 18 <= current_hour < 24:
                 greeting_text.value = f"Добрый вечер, {name}!"
             else:
                 greeting_text.value = f"Доброй ночи, {name}!"
+                
             greet_button.text = 'Поздороваться снова'
             name_input.value = ''
 
-            greeting_history.append(f"{timestamp}: {name}")
+            greeting_history.append(f"{timestamp.strftime('%Y-%m-%d %H:%M:%S')}: {name}")
             history_text.value = "История приветствий:\n" + "\n".join(greeting_history)
             
         else:
@@ -60,11 +54,9 @@ def main(page: ft.Page):
 
     theme_button = ft.IconButton(icon=ft.icons.BRIGHTNESS_6, tooltip="Сменить тему", on_click=toggle_theme)
 
-
     clear_button = ft.TextButton("Очистить историю", on_click=clear_history)
 
-    clear_button_icon = ft.IconButton(icon=ft.icons.DELETE, tooltip="Очиститка", on_click=clear_history)
-
+    clear_button_icon = ft.IconButton(icon=ft.icons.DELETE, tooltip="Очистить", on_click=clear_history)
 
     greet_button = ft.ElevatedButton("Поздороваться", on_click=on_button_click)
 
@@ -78,7 +70,3 @@ def main(page: ft.Page):
     )
 
 ft.app(target=main)
-
-# ft.app(target=main, view=ft.WEB_BROWSER)
-
-
